@@ -1,42 +1,22 @@
 use std::collections::BTreeSet;
 
-use nom::{
-    bytes::complete::tag,
-    character::complete::{digit1, line_ending, multispace0, space0, space1},
-    multi::separated_list1,
-    IResult,
-};
-
-fn card(input: &str) -> IResult<&str, (BTreeSet<usize>, BTreeSet<usize>)> {
-    let (input, _) = multispace0(input)?;
-    let (input, _) = tag("Card")(input)?;
-    let (input, _) = space0(input)?;
-    let (input, _) = digit1(input)?;
-    let (input, _) = space0(input)?;
-    let (input, _) = tag(":")(input)?;
-    let (input, _) = space0(input)?;
-    let (input, w) = separated_list1(space1, digit1)(input)?;
-    let (input, _) = space0(input)?;
-    let (input, _) = tag("|")(input)?;
-    let (input, _) = space0(input)?;
-    let (input, n) = separated_list1(space1, digit1)(input)?;
-    let (input, _) = space0(input)?;
-
-    let winners = w
-        .into_iter()
-        .map(|s| s.parse::<usize>().unwrap())
-        .collect::<BTreeSet<_>>();
-
-    let numbers = n
-        .into_iter()
-        .map(|s| s.parse::<usize>().unwrap())
-        .collect::<BTreeSet<_>>();
-
-    Ok((input, (winners, numbers)))
-}
-
 fn process(input: &str) -> usize {
-    let (_, cards) = separated_list1(line_ending, card)(input).unwrap();
+    let cards: Vec<(BTreeSet<usize>, BTreeSet<usize>)> = input
+        .lines()
+        .map(|line| {
+            let s = line.split(&[':', '|']).collect::<Vec<&str>>();
+            let w = s[1]
+                .split_whitespace()
+                .map(|s| s.parse::<usize>().unwrap())
+                .collect::<BTreeSet<_>>();
+            let n = s[2]
+                .split_whitespace()
+                .map(|s| s.parse::<usize>().unwrap())
+                .collect::<BTreeSet<_>>();
+            (w, n)
+        })
+        .collect();
+
     let base: usize = 2;
     cards
         .iter()
