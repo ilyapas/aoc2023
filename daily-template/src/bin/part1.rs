@@ -1,4 +1,4 @@
-fn process(input: &str) -> u32 {
+fn process(input: &str) -> usize {
     todo!()
 }
 
