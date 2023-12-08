@@ -1,5 +1,5 @@
 run day part:
-    cd {{day}} && cargo run --bin {{part}}
+    cd {{day}} && cargo run --bin {{part}} --release
 
 test day:
     cd {{day}} && cargo watch -x test 
